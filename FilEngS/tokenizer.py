@@ -22,9 +22,11 @@ class Tokenizer:
         self.foreign = r"[^\x00-\xff\u2000-\u26FF]+" #Non Ascii Character or Unicode Symbols
         self.tokenizer = tt.Tokenizer(custom_hashtags=False, ignorestopwords=False, lowercase=True, normalize=3)
         self.cleaned = []
+        self.length = []
 
     def clean(self, tweets, save_dir='./'):
         self.cleaned.clear()
+        self.length.clear()
         for i in range(len(tweets)):
             text = str(tweets[i])
             text = text.lower() # lowercase
@@ -40,5 +42,7 @@ class Tokenizer:
             for tk in tokens:
                 tokenized_string = tokenized_string + tk + ' '        
             self.cleaned.append(tokenized_string)  # update the row text
+            self.length.append(len(tokens))
         
-        return pd.Series(self.cleaned)
+        results = {'cleaned':self.cleaned,'sequence_length':self.length}
+        return pd.DataFrame(results)
