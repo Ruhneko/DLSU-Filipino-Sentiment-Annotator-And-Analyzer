@@ -52,7 +52,7 @@ class Classifier:
         adam = tf.keras.optimizers.Adam(learning_rate=0.0001)
         self.model.compile(optimizer=adam, loss='binary_crossentropy', metrics=met)
 
-    def strip_emoji(string):
+    def strip_emoji(self, string):
         string = demoji.replace(string, '')
         return string
 
