@@ -29,12 +29,12 @@ pip install git+https://github.com/Ruhneko/Filipino-English-Sentiment-Tagger.git
 ## API
 
 ### Tokenizer
-Tokenizes and Returns a Series of tweet content.
+Tokenizes a tweet content contained in a Series and returns a Dataframe with the ``cleaned`` and ``sequence length`` columns.
 ```python
 from FilEngs import Tokenizer
 tweets_df = pd.read_csv('file.csv', index_col=[0])
 tokenize = Tokenizer()
-tweets_df['cleaned'] = tokenize.clean(tweets_df['tweet'])
+tweets_df['cleaned', 'sequence_length'] = tokenize.clean(tweets_df['tweet'])
 ```
 
 ### Annotator
