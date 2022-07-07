@@ -21,7 +21,7 @@ setup(
     dependency_links=['https://github.com/atmarges/pinoy_tweetokenize'],
     include_package_data=True,
     # *strongly* suggested for sharing
-    version='0.1.2',
+    version='0.1.3',
     # The license can be anything you like
     license='Someone',
     description='Filipino English Sentiment Tagger',

@@ -6,7 +6,6 @@ from collections import Counter
 
 import pandas as pd
 
-
 class Annotator:
  
     # default constructor
@@ -14,10 +13,12 @@ class Annotator:
         dictionary = open(datadir + '/es_dict.pkl', "rb")
         self.es_dict = pickle.load(dictionary)
         
-        # EMOJI MODIFIERS
-        self.SKIN_MODS = r'[\U0001F3FB-\U0001F3FF]' # unicode range for light to dark skin tone
-        self.MOD1 = r'\U0000FE0F'                   # variant selector-16
-        self.MOD_PATTERN = self.SKIN_MODS + "|" + self.MOD1
+        ZEROWIDTH = r"[\u200d]+" # ZEROWIDTH SEPARATOR
+        SKIN_MODS = r'[\U0001F3FB-\U0001F3FF]' # unicode range for light to dark skin tone
+        MOD1 = r'\U0000FE0F'                   # variant selector-16
+        MOD2 = r'\U00002642'                   # Gender symbol female 
+        MOD3 = r'\U00002640'                   # Gender symbol male
+        self.MOD_PATTERN = SKIN_MODS + "|" + MOD1 + "|" + MOD2 + "|" + MOD3 +  "|" + ZEROWIDTH
 
         # EMOJI REGEX - specify range of emojis to count
         self.EMOJIS_REG = [
@@ -31,7 +32,7 @@ class Annotator:
         ]
         self.PATTERN = r'[\U000000a6-\U000000ae]'
         for reg in self.EMOJIS_REG:
-           self. PATTERN = self.PATTERN + '|' + reg 
+            self.PATTERN = self.PATTERN + '|' + reg 
        
         if load_dir == None:
             self.load_dir = './'
@@ -61,7 +62,7 @@ class Annotator:
         # Clean Emojis Modifiers
         df_rec = tweets_df.to_records()
         for row in df_rec:
-            text = str(tweets_df.at[row[0], 'cleaned'])
+            text = str(tweets_df.at[row[0], 'text'])
             tweets_df.at[row[0], 'cleaned'] = re.sub(self.MOD_PATTERN, '', text) # Remove Modifiers
         
         # Emoji Counters
@@ -70,7 +71,7 @@ class Annotator:
         
         # Counts emojis and scores tweets with emojis
         for row in df_rec:
-            text = str(tweets_df.at[row[0], 'cleaned'])
+            text = str(tweets_df.at[row[0], 'text'])
             emoji_found = re.findall(self.PATTERN, text) 
             if len(emoji_found) > 0:
                 # Count Unique Emojis
@@ -109,7 +110,7 @@ class Annotator:
 
         tweets_pos_rec = tweets_positive.to_records()
         for row in tweets_pos_rec:
-            emoji_found = re.findall(self.PATTERN, str(tweets_positive.at[row[0], 'cleaned'])) 
+            emoji_found = re.findall(self.PATTERN, str(tweets_positive.at[row[0], 'text'])) 
             if len(emoji_found) > 0:
                 # Count Unique Emojis
                 unique_emojis = set(emoji_found)
@@ -126,7 +127,7 @@ class Annotator:
 
         tweets_neg_rec = tweets_negative.to_records()
         for row in tweets_neg_rec:
-            emoji_found = re.findall(self.PATTERN, str(tweets_negative.at[row[0], 'cleaned'])) 
+            emoji_found = re.findall(self.PATTERN, str(tweets_negative.at[row[0], 'text'])) 
             if len(emoji_found) > 0:
                 # Count Unique Emojis
                 unique_emojis = set(emoji_found)
@@ -165,4 +166,3 @@ class Annotator:
         
         metrics_df.to_csv(self.save_dir3+filename+'_metrics'+self.extension, encoding='utf-8', quoting=csv.QUOTE_ALL)
         print(filename+'_metrics'+self.extension+" saved")
-  
